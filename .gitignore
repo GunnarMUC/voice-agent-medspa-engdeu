@@ -1,0 +1,120 @@
+# Security Audit Script - Git Ignore File
+
+# Generated Reports (keep examples, ignore timestamped ones)
+security_audit_*_*.md
+security_audit_*_*.json
+security_audit_*_*.log
+
+# Keep example reports
+!security_audit_report_example.md
+!security_audit_data_example.json
+
+# macOS System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# User-specific files
+.CFUserTextEncoding
+.zsh_history
+.zsh_sessions/
+.bash_history
+.bash_sessions/
+
+# IDE and Editor files
+.vscode/
+.cursor/
+.continue/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Package managers
+.npm/
+.cache/
+
+# User directories (don't track personal files)
+Desktop/
+Documents/
+Downloads/
+Movies/
+Music/
+Pictures/
+Public/
+Library/
+
+# User-specific app data
+.docker/
+.ollama/
+.conda/
+.config/
+.claude.json*
+.claude/
+.gemini/
+.EasyOCR/
+
+# AI/ML specific
+*.model
+*.pkl
+*.h5
+*.weights
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.backup
+
+# Personal directories
+"Grundlagen AI/"
+ai_dateien/
+
+# Office files
+~$*.xlsx
+~$*.docx
+~$*.pptx
+
+# Keep important project files
+!README.md
+!README_Security_Audit.md
+!security_audit_script.py
+!run_security_audit.sh
+!LICENSE
+!.gitignore
