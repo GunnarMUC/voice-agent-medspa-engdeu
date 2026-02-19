@@ -33,6 +33,13 @@ Thumbs.db
 *.swo
 *~
 
+# Voice Agent
+.env
+booking.db
+chroma_db/
+*.wav
+tts-models/
+
 # Python
 __pycache__/
 *.py[cod]
