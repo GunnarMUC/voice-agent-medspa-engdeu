@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Voice Agent – Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --border: #2d3a4d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --success: #3fb950;
+      --danger: #f85149;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .container { max-width: 560px; margin: 0 auto; }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .card h2 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--muted);
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .status.running { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+    .status.stopped { background: rgba(248, 81, 73, 0.2); color: var(--danger); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .status.running .status-dot { background: var(--success); }
+    .status.stopped .status-dot { background: var(--danger); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-ghost { background: var(--border); color: var(--text); }
+    .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    input[type="text"], input[type="url"] {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: inherit;
+      margin-bottom: 0.75rem;
+    }
+    input:focus { outline: none; border-color: var(--accent); }
+    .row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .row:last-child { margin-bottom: 0; }
+    .label { font-size: 0.85rem; color: var(--muted); min-width: 80px; }
+    select {
+      padding: 0.5rem 2rem 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .info { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; }
+    .message {
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+    }
+    .message.success { background: rgba(63, 185, 80, 0.15); color: var(--success); }
+    .message.error { background: rgba(248, 81, 73, 0.15); color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Voice Agent Dashboard</h1>
+    <p class="subtitle">Steuerung für Präsentationen · Deutsch & Englisch</p>
+
+    <div class="card">
+      <h2>Agent</h2>
+      <div class="row">
+        <span class="label">Status</span>
+        <span id="status" class="status stopped"><span class="status-dot"></span> Gestoppt</span>
+      </div>
+      <div class="row">
+        <span class="label">Sprache</span>
+        <select id="language">
+          <option value="de">Deutsch</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <div class="btn-group" style="margin-top: 1rem;">
+        <button id="btnStart" class="btn btn-primary">▶ Agent starten</button>
+        <button id="btnStop" class="btn btn-danger">■ Agent beenden</button>
+      </div>
+      <p class="info">Der Agent läuft lokal (Mikrofon + Lautsprecher). Nach Start: Sprechen Sie, der Agent antwortet.</p>
+    </div>
+
+    <div class="card">
+      <h2>Klinik-Daten</h2>
+      <p class="info" style="margin-bottom: 0.75rem;">Webseite der Klinik eingeben – Daten werden gecrawlt und für den Agenten geladen.</p>
+      <input type="text" id="clinicUrl" placeholder="https://beispiel-zahnarzt.de" />
+      <div class="btn-group">
+        <button id="btnLoad" class="btn btn-primary">Daten laden</button>
+        <button id="btnClear" class="btn btn-ghost">Wissensbasis leeren</button>
+      </div>
+      <div id="clinicInfo" class="info" style="margin-top: 0.75rem;"></div>
+      <div id="clinicMessage"></div>
+    </div>
+  </div>
+
+  <script>
+    const API = '/api';
+    let pollInterval;
+
+    async function fetchStatus() {
+      const r = await fetch(API + '/status');
+      return r.json();
+    }
+
+    function updateUI(s) {
+      const statusEl = document.getElementById('status');
+      const btnStart = document.getElementById('btnStart');
+      const btnStop = document.getElementById('btnStop');
+      if (s.agent_running) {
+        statusEl.className = 'status running';
+        statusEl.innerHTML = '<span class="status-dot"></span> Läuft';
+        btnStart.disabled = true;
+        btnStop.disabled = false;
+      } else {
+        statusEl.className = 'status stopped';
+        statusEl.innerHTML = '<span class="status-dot"></span> Gestoppt';
+        btnStart.disabled = false;
+        btnStop.disabled = true;
+      }
+      document.getElementById('language').value = s.language || 'de';
+      const info = document.getElementById('clinicInfo');
+      if (s.current_clinic_url) {
+        info.textContent = `Aktuell: ${s.current_clinic_url} · ${s.chunk_count} Chunks`;
+      } else {
+        info.textContent = s.chunk_count > 0 ? `${s.chunk_count} Chunks (ohne URL)` : 'Keine Klinik-Daten geladen';
+      }
+    }
+
+    function showMessage(elId, text, type) {
+      const el = document.getElementById(elId);
+      el.textContent = text;
+      el.className = 'message ' + type;
+      el.style.display = 'block';
+      setTimeout(() => { el.textContent = ''; el.className = 'message'; }, 5000);
+    }
+
+    async function poll() {
+      try {
+        const s = await fetchStatus();
+        updateUI(s);
+      } catch (e) {}
+    }
+
+    document.getElementById('btnStart').onclick = async () => {
+      const lang = document.getElementById('language').value;
+      try {
+        const r = await fetch(API + '/agent/start?lang=' + lang, { method: 'POST' });
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.detail || 'Fehler');
+        showMessage('clinicMessage', d.message || 'Agent gestartet.', 'success');
+        poll();
+      } catch (e) {
+        showMessage('clinicMessage', e.message, 'error');
+      }
+    };
+
+    document.getElementById('btnStop').onclick = async () => {
+      try {
+        const r = await fetch(API + '/agent/stop', { method: 'POST' });
+        const d = await r.json();
+        showMessage('clinicMessage', 'Agent beendet.', 'success');
+        poll();
+      } catch (e) {
+        showMessage('clinicMessage', e.message, 'error');
+      }
+    };
+
+    document.getElementById('language').onchange = async () => {
+      const lang = document.getElementById('language').value;
+      await fetch(API + '/language', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ language: lang })
+      });
+    };
+
+    document.getElementById('btnLoad').onclick = async () => {
+      const url = document.getElementById('clinicUrl').value.trim();
+      if (!url) {
+        showMessage('clinicMessage', 'Bitte URL eingeben.', 'error');
+        return;
+      }
+      const btn = document.getElementById('btnLoad');
+      btn.disabled = true;
+      btn.textContent = 'Lädt...';
+      try {
+        const r = await fetch(API + '/clinic/load', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.detail || 'Fehler');
+        showMessage('clinicMessage', `${d.chunks_added} Chunks geladen.${d.chunks_cleared ? ' Alte Daten ersetzt.' : ''}`, 'success');
+        poll();
+      } catch (e) {
+        showMessage('clinicMessage', e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Daten laden';
+      }
+    };
+
+    document.getElementById('btnClear').onclick = async () => {
+      if (!confirm('Wissensbasis wirklich leeren? Der Agent hat dann keine Klinik-Daten mehr.')) return;
+      try {
+        const r = await fetch(API + '/clinic/clear', { method: 'POST' });
+        const d = await r.json();
+        showMessage('clinicMessage', `${d.chunks_removed} Chunks entfernt.`, 'success');
+        poll();
+      } catch (e) {
+        showMessage('clinicMessage', e.message, 'error');
+      }
+    };
+
+    poll();
+    pollInterval = setInterval(poll, 3000);
+  </script>
+</body>
+</html>
