@@ -1,5 +1,8 @@
 # Voice Agent MedSpa / Zahnklinik
 
+[![CI](https://github.com/GunnarMUC/voice-agent-medspa-engdeu/actions/workflows/ci.yml/badge.svg)](https://github.com/GunnarMUC/voice-agent-medspa-engdeu/actions)
+
+
 Ein **sprachgesteuerter KI-Assistent** für Zahnkliniken und Med Spas. Der Agent arbeitet als virtueller Telefonempfang: Er beantwortet Fragen zu Leistungen, Öffnungszeiten und Team, führt Terminbuchungen durch und spricht **Deutsch** sowie **Englisch**.
 
 ## Highlights
